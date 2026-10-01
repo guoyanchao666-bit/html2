@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>隐零点估算：f(x)=x²-x-xlnx</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:#f6f3ea;color:#20242b}
+  .wrap{max-width:1050px;margin:auto;padding:22px}
+  h1{margin:0 0 8px;font-size:28px}
+  .sub{color:#666;margin-bottom:18px}
+  .card{background:white;border-radius:18px;padding:18px 20px;margin:14px 0;box-shadow:0 5px 22px #00000010}
+  .formula{font-size:22px;font-weight:650;text-align:center;padding:14px;background:#fff8cf;border-radius:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  button{border:0;border-radius:999px;padding:10px 15px;background:#20242b;color:#fff;margin:4px;cursor:pointer;font-size:15px}
+  button.on{background:#f0b400;color:#222}
+  .tip{padding:12px 14px;border-left:5px solid #f0b400;background:#fff8df;border-radius:8px;line-height:1.7}
+  svg{width:100%;height:auto;background:#fff;border-radius:14px;border:1px solid #eee}
+  .small{font-size:14px;color:#666;line-height:1.65}
+  .big{font-size:19px;line-height:1.8}
+  .answer{font-size:24px;font-weight:750;text-align:center;padding:18px;background:#eef7ff;border-radius:14px}
+  .legend span{display:inline-block;margin-right:16px;font-size:14px}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e64b35;margin-right:5px}
+  .dot2{background:#2b70c9}
+  .dot3{background:#26a269}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📈 用图像学会这道“隐零点估算”题</h1>
+  <div class="sub">目标：看懂为什么极大值点 x₀ 很难直接算，但 f(x₀) 却可以被漂亮地夹出来。</div>
+
+  <div class="card">
+    <div class="formula">f(x)=x²−x−x ln x，　x&gt;0</div>
+    <div style="margin-top:12px;text-align:center">
+      <button id="b1" onclick="showStep(1)">① 看 f(x)</button>
+      <button id="b2" onclick="showStep(2)">② 看 f′(x)</button>
+      <button id="b3" onclick="showStep(3)">③ 找极大值点 x₀</button>
+      <button id="b4" onclick="showStep(4)">④ 估算 f(x₀)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <svg id="plot" viewBox="0 0 900 430"></svg>
+    <div class="legend" style="padding:10px 4px">
+      <span><i class="dot"></i> f(x)</span>
+      <span><i class="dot dot2"></i> 关键位置</span>
+      <span><i class="dot dot3"></i> f′(x) 的零点</span>
+    </div>
+    <div id="caption" class="tip"></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>第一关：为什么有唯一极大值？</h2>
+      <div id="text1" class="big"></div>
+    </div>
+    <div class="card">
+      <h2>第二关：x₀ 到底是多少？</h2>
+      <div id="text2" class="big"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>第三关：最关键的“消元”</h2>
+    <div class="formula">f′(x₀)=0 ⟹ 2x₀−2−ln x₀=0</div>
+    <div class="big" style="text-align:center;margin-top:10px">
+      所以 <b>ln x₀=2x₀−2</b>。
+      <br>
+      把它塞回 f(x₀)：
+      <br>
+      <b>f(x₀)=x₀²−x₀−x₀(2x₀−2)=x₀(1−x₀)</b>
+    </div>
+    <div class="tip" style="margin-top:12px">
+      💡 这就是本题真正的“隐零点估算”：<b>不需要把 x₀ 精确解出来</b>，
+      只要知道 0&lt;x₀&lt;1/2，就已经足够估计极大值。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>第四关：在图上看见夹逼</h2>
+    <div class="grid">
+      <div>
+        <div class="formula">f(x₀)=x₀(1−x₀)</div>
+        <p class="big">因为 0&lt;x₀&lt;1/2，图像上的峰顶横坐标就在 0 和 1/2 之间。</p>
+        <p class="big">而二次函数 x(1−x) 在 x=1/2 时达到 1/4，所以</p>
+        <div class="formula">f(x₀)&lt;1/4=2⁻²</div>
+      </div>
+      <div>
+        <p class="big">下界稍微巧一点。令</p>
+        <div class="formula">h(x)=ln(1−x)+2x</div>
+        <p class="big">当 0&lt;x&lt;1/2 时，h′(x)&gt;0，且 h(0)=0。</p>
+        <p class="big">因此 h(x₀)&gt;0，即</p>
+        <div class="formula">ln(1−x₀)&gt;−2x₀</div>
+        <p class="big">于是 ln f(x₀)&gt;−2，从而</p>
+        <div class="formula">f(x₀)&gt;e⁻²</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="answer">最终：　e⁻² ＜ f(x₀) ＜ 2⁻²</div>
+
+  <div class="card small">
+    <b>给你一个直观数值：</b> x₀≈0.2032，f(x₀)≈0.1619。
+    它确实落在 0.1353=e⁻² 和 0.25=2⁻² 之间。
+    <br><br>
+    注意：考试证明中不需要算出这两个近似值；这些数字只是帮助你“看见”图像。
+  </div>
+</div>
+
+<script>
+const W=900,H=430, pad={l:65,r:30,t:25,b:48};
+const xmin=0.03,xmax=2.2,ymin=-0.35,ymax=0.55;
+const x0=0.20318786998, y0=0.16190255947;
+function f(x){return x*x-x-x*Math.log(x)}
+function fp(x){return 2*x-2-Math.log(x)}
+function sx(x){return pad.l+(x-xmin)/(xmax-xmin)*(W-pad.l-pad.r)}
+function sy(y){return pad.t+(ymax-y)/(ymax-ymin)*(H-pad.t-pad.b)}
+function line(x1,y1,x2,y2,cls='axis'){return `<line x1="${sx(x1)}" y1="${sy(y1)}" x2="${sx(x2)}" y2="${sy(y2)}" class="${cls}"/>`}
+function path(fn, color, width=4, xr=xmin, xx=xmax){
+  let d='', n=500;
+  for(let i=0;i<=n;i++){let x=xr+(xx-xr)*i/n; let y=fn(x); if(!isFinite(y))continue; d+=(d?'L':'M')+sx(x)+' '+sy(y)}
+  return `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`
+}
+function draw(mode=1){
+  let s=`<style>
+  .axis{stroke:#9aa0a6;stroke-width:1.5}.grid{stroke:#e9e9e9;stroke-width:1}
+  .txt{font:15px sans-serif;fill:#555}.lab{font:bold 17px sans-serif;fill:#20242b}
+  </style>`;
+  for(let y=-.3;y<=.5;y+=.1)s+=line(xmin,y,xmax,y,'grid');
+  for(let x=.5;x<=2;x+=.5)s+=line(x,-.35,x,.55,'grid');
+  s+=line(xmin,0,xmax,0,'axis')+line(0,ymin,0,ymax,'axis');
+  s+=`<text x="${W-25}" y="${sy(0)-8}" class="txt">x</text><text x="${sx(0)+8}" y="22" class="txt">y</text>`;
+  s+=`<text x="${sx(.5)-8}" y="${sy(0)+25}" class="txt">1/2</text>`;
+  s+=`<text x="${sx(1)-5}" y="${sy(0)+25}" class="txt">1</text>`;
+  if(mode<=3)s+=path(f,'#e64b35',4);
+  if(mode==2 || mode==3){
+    // scaled derivative, just for visual sign/shape
+    s+=path(x=>fp(x)/7,'#2b70c9',3);
+    s+=`<text x="${sx(1.25)}" y="${sy(fp(1.25)/7)-8}" class="lab">f′(x)/7</text>`;
+  }
+  if(mode>=3){
+    s+=`<line x1="${sx(x0)}" y1="${sy(-.35)}" x2="${sx(x0)}" y2="${sy(y0)}" stroke="#26a269" stroke-width="2" stroke-dasharray="7 6"/>`;
+    s+=`<circle cx="${sx(x0)}" cy="${sy(y0)}" r="7" fill="#26a269"/>`;
+    s+=`<text x="${sx(x0)+10}" y="${sy(y0)-12}" class="lab">x₀≈0.203</text>`;
+    s+=`<line x1="${sx(0)}" y1="${sy(y0)}" x2="${sx(x0)}" y2="${sy(y0)}" stroke="#26a269" stroke-width="2" stroke-dasharray="7 6"/>`;
+  }
+  if(mode==4){
+    s+=path(x=>x*(1-x),'#2b70c9',3,.03,1);
+    s+=`<line x1="${sx(.5)}" y1="${sy(0)}" x2="${sx(.5)}" y2="${sy(.25)}" stroke="#26a269" stroke-width="2" stroke-dasharray="7 6"/>`;
+    s+=`<line x1="${sx(0)}" y1="${sy(.25)}" x2="${sx(.5)}" y2="${sy(.25)}" stroke="#26a269" stroke-width="2" stroke-dasharray="7 6"/>`;
+    s+=`<circle cx="${sx(x0)}" cy="${sy(y0)}" r="7" fill="#e64b35"/>`;
+    s+=`<text x="${sx(.58)}" y="${sy(.25)-10}" class="lab">1/4</text>`;
+    s+=`<text x="${sx(.78)}" y="${sy(.28)}" class="lab">x(1−x)</text>`;
+  }
+  document.getElementById('plot').innerHTML=s;
+}
+const captions={
+1:"先别急着求导。红色曲线就是 f(x)。你能看到：在 x 很靠近 0 的地方，曲线先上升，随后出现一个峰顶。",
+2:"现在看蓝色曲线 f′(x)。红色曲线的“峰顶”，恰好对应蓝线穿过 x 轴的地方，因为那里 f′(x)=0。",
+3:"这里的绿色虚线标出了 x₀。它在 0 和 1/2 之间。关键是：我们不必把 x₀ 解成一个漂亮的数。",
+4:"最后只看 x₀(1−x₀)。蓝色曲线是 x(1−x)，而 0<x₀<1/2，所以峰顶对应的高度一定小于 1/4。"
+};
+function showStep(n){
+  for(let i=1;i<=4;i++)document.getElementById('b'+i).classList.toggle('on',i===n);
+  draw(n);
+  document.getElementById('caption').innerHTML=captions[n];
+  document.getElementById('text1').innerHTML=
+    n===1||n===2||n===3 ?
+    `f′(x)=2x−2−ln x。<br><br>再求一次：<b>f′′(x)=2−1/x</b>。<br><br>所以 f′ 在 (0,1/2) 上递减，在 (1/2,+∞) 上递增。<br><br>又 f′(1/2)=ln2−1&lt;0，且 f′(1)=0，因此前面必有一个唯一零点 x₀∈(0,1/2)。` :
+    `我们已经把问题变成：估计 <b>x₀(1−x₀)</b>。`;
+  document.getElementById('text2').innerHTML=
+    n<3 ?
+    `令 <b>f′(x)=0</b>。这就是“隐零点”：x₀ 通常没有简单的初等表达式。<br><br>但我们知道它的位置：<b>0&lt;x₀&lt;1/2</b>。` :
+    `峰顶横坐标约为 <b>0.203</b>（这里只用于看图）。<br><br>真正做题时，不需要这个小数；位置关系 <b>0&lt;x₀&lt;1/2</b> 才是有用的信息。`;
+}
+showStep(1);
+</script>
+</body>
+</html>
